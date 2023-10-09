@@ -1,1 +1,1 @@
-# Data-Visualization
+# Information-Visualization-Lab
