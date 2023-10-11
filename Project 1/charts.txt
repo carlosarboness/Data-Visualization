@@ -1,0 +1,16 @@
+
+---- Charts ----
+
+1. Primer grafic amb 7 barres un per cada dia de la setmana amb el nombre d'accidents total (count). Potser color per weekday i color per weekend. 7 paired bar charts (abans covid i despres covid). 
+
+2. Bar plot amb els noms dels vehicles mes disposats a acciedents amb el nombre d'accidents (eix x) i el nom del vehicle (eix y).
+
+3. Line chart, o histograma 2 lines una per cada any? potser sumarles? The x-axis represents the time of day (e.g., hourly intervals), and the y-axis represents the number of accidents at each time. This will help identify peak accident times.
+
+4. Probar dot maps (molts punts potser malament), sino Choropleth Maps (pensar be colors)
+
+5. Sactterplot, Scatterplot Matrices. Mirar relacions entre clima y accidents. Binnejar temperatura i precipitacio, etc. 
+
+6. Quin tipus de persona (motorista, ciclista, vianant) es mes propens a ser injured, killed, etc.??
+
+7. Quin es el motiu mes important en els accidents?
