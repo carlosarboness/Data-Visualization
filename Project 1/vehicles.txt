@@ -1,0 +1,94 @@
+
+---- vehicle type 1 ----
+The list of names and number of examples of "VEHICLE TYPE CODE 1" after we applying all the transformations mentioned are the following: 
+
+- Sedan - 54025
+- Station Wagon/Sport Utility Vehicle - 40658
+- Taxi - 4806
+- Pickup - 3479
+- Box truck - 2325
+- Bike - 1938
+- Bus - 1420
+- Truck - 1087
+- Motorcycle - 1051
+- Van - 836
+- Ambulance - 467
+- Convertible - 411
+- Dump - 325
+- E-Scooter - 240
+- Flat bed - 232
+- Garbage - 193
+- Carry All - 146
+- E-Bike - 146
+- Moped - 135
+- Tow truck - 106
+- Scooter - 90
+- Chassis Cab - 83
+- Fire truck - 78
+- Tanker - 70
+- Motorbike - 64
+- Concrete Mixer - 63
+- Trailer - 63
+- Flat rack - 42
+- Delivery - 39
+- Armored Truck - 33
+- Beverage Truck - 30
+- 3-Door - 28
+- Lift boom - 21
+- Multi-Wheeled Vehicle - 19
+- Forklift - 16
+- Commercial - 13
+- Stake or Rackv - 12
+- Utility - 12
+- School bus - 11
+- Tractor - 11
+- Others - 156
+- (blank) - 750
+
+The list of names and number of examples of "VEHICLE TYPE CODE 1" after we applied all the transformations mentioned are the following:
+
+- Sedan - 38643
+- Station Wagon/Sport Utility Vehicle - 29520
+- Taxi - 3622
+- Bike - 3605
+- Pickup - 3051
+- Box truck - 2532
+- includeeditBus - 1279
+- Truck - 1034
+- Motorcycle - 839
+- Van - 800
+- Dump - 369
+- E-Scooter - 357
+- Ambulance - 265
+- E-Bike - 256
+- Convertible - 252
+- Flat bed - 246
+- Garbage - 212
+- Moped - 152
+- Tow truck - 142
+- Carry All - 116
+- Fire truck - 95
+- Motorbike - 83
+- Motorscooter - 73
+- Chassis Cab - 68
+- Concrete Mixer - 50
+- Tanker - 46
+- Delivery - 38
+- Scooter - 37
+- Trailer - 34
+- Flat rack - 27
+- Beverage Truck - 25
+- Lift boom - 24
+- 3-Door - 22
+- Armored Truck - 22
+- Stake or Rack - 21
+- Commercial - 19
+- Forklift - 19
+- Electric - 18
+- Minibike - 15
+- Pedicab - 13
+- Multi-Wheeled Vehicle - 12
+- Open Body - 11
+- Street cleaning - 10
+- Others - 186
+- (blank) - 27480
