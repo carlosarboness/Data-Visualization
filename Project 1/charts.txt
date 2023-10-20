@@ -1,16 +1,40 @@
 
----- Charts ----
+---- First Design Thinking ----
 
-1. Primer grafic amb 7 barres un per cada dia de la setmana amb el nombre d'accidents total (count). Potser color per weekday i color per weekend. 7 paired bar charts (abans covid i despres covid). 
+Question 1: 
 
-2. Bar plot amb els noms dels vehicles mes disposats a acciedents amb el nombre d'accidents (eix x) i el nom del vehicle (eix y).
+We have to differenciate between weekdays and weekends and also between before and after covid (2018 and 2020). The idea is to have the day of the week in the x-axis and the sum up the number of accidents that occured that day. In that way we should be able to notice if there is a significative difference between weekdays and weekends. We think it would be a good idea to use a paired bar chart to compare the number of accidents before and after covid, using a different color for each. 
 
-3. Line chart, o histograma 2 lines una per cada any? potser sumarles? The x-axis represents the time of day (e.g., hourly intervals), and the y-axis represents the number of accidents at each time. This will help identify peak accident times.
 
-4. Probar dot maps (molts punts potser malament), sino Choropleth Maps (pensar be colors)
+Question 2:
 
-5. Sactterplot, Scatterplot Matrices. Mirar relacions entre clima y accidents. Binnejar temperatura i precipitacio, etc. 
+We want to know which are the most common vehicles involved in accidents. We will use a bar chart with the number of accidents in the x-axis and the name of the vehicle in the y-axis (for visualization purposes to see the names of the vehicles optimally). We will use a bar chart because we want to compare the number of accidents between different vehicles.
 
-6. Quin tipus de persona (motorista, ciclista, vianant) es mes propens a ser injured, killed, etc.??
 
-7. Quin es el motiu mes important en els accidents?
+Question 3
+
+To see at what time are accidents more common we will use a line chart. The x-axis will be the time of the day and the y-axis the number of accidents. We will use a line chart because we want to see the evolution of the number of accidents during the day. We also think that an histogram could be a good option. The time will be represented by hours. We will separate the data by year, so we will have two lines, one for 2018 and another for 2020. We will use different colors for each year.
+
+Question 4
+
+For identiding areas with larger number of accidents we will use a dot map (altough we have to be careful in acase of overplotting). We will use a dot map because we want to see the distribution of the accidents in the city. We will use the coordinates of the accidents to plot the dots. We will use different colors for each year. We also think about implementing a CloroPeth map, with correct color choice. 
+
+
+Question 5
+
+To look for correlation between weather and accidents we will use a scatterplot. We will use a scatterplot because we want to see the correlation between two variables. We will use the temperature and the precipitation as variables. We will use different colors for each year. We will use the coordinates of the accidents to plot the dots. We can also use scatterplot matrices. Bin temperature and precipitation, etc.
+
+Question 6 
+
+Quin tipus de persona (motorista, ciclista, vianant) es mes propens a ser injured, killed, etc.??
+
+Question 7
+
+Quin es el motiu mes important en els accidents?
+
+
+---- Second Design Thinking ----
+
+Question 1
+
+We need to add precision lines in order to notice the difference. 
