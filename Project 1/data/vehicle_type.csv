@@ -1,0 +1,12 @@
+vehicle_type,counts,character
+Sedan,92668,Private
+Station Wagon/Sport Utility Vehicle,70178,Private
+Taxi,8428,Public
+Others,6700,Private
+Pickup,6530,Private
+Bike,5543,Private
+Box truck,4857,Private
+Bus,2699,Public
+Truck,2121,Private
+Motorcycle,1890,Private
+Van,1636,Private
