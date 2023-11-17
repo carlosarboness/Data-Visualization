@@ -1,6 +1,6 @@
 vehicle_type,counts,character
 Sedan,92668,Private
-Station Wagon/Sport Utility Vehicle,70178,Private
+SUV,70178,Private
 Taxi,8428,Public
 Others,6700,Private
 Pickup,6530,Private

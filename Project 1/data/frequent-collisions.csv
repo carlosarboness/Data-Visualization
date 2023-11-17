@@ -1,4 +1,4 @@
-CRASH_DATETIME,day_week,type_day
+CRASH_DATETIME,DAY_WEEK,TYPE_DAY
 2020-09-06 18:05:00,Sunday,Weekend
 2020-09-20 09:14:00,Sunday,Weekend
 2020-09-24 22:00:00,Thursday,Weekday
