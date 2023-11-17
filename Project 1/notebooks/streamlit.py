@@ -24,15 +24,23 @@ with st.sidebar:
     )
 
 
-col1, col2 = st.columns(2)
+with st.container():
+    
+    col1, col2 = st.columns(2)
 
-with col1:
-    st.altair_chart(c1, use_container_width=True)
-    st.altair_chart(c2, use_container_width=True)
+    with col1:
+        st.altair_chart(c1, use_container_width=True)
+        st.altair_chart(c2, use_container_width=True)
 
-with col2: 
+    with col2: 
 
-    st.altair_chart(c4, use_container_width=True)
-    st.altair_chart(c1, use_container_width=True)
+        st.altair_chart(c4, use_container_width=True)
+        st.altair_chart(c1, use_container_width=True)
+
+with st.container():    
+    
+    left_co, cent_co, last_co = st.columns([1, 5, 5])
+
+    cent_co.altair_chart(c5, use_container_width=True)
 
 
