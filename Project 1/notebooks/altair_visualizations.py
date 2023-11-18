@@ -100,11 +100,11 @@ error_bar = alt.Chart(collisions).mark_errorbar(ticks=True).encode(
    groupby=['year', 'hours', 'CRASH_DATE']
 )
 
-avg_kills_line = alt.Chart(collisions).mark_trail().encode(
+avg_deaths_line = alt.Chart(collisions).mark_trail().encode(
     x = alt.X('hours:Q', title='Time of day'),
     y = alt.Y('avg_collisions:Q', title='Average number of collisions'),
     color = alt.Color('year:O', scale = alt.Scale(scheme='tableau10'), title='Year'),
-    size = alt.Size('avg_killed:Q', title='Average killed')
+    size = alt.Size('avg_killed:Q', title='Average deaths')
 ).transform_calculate(
   year = 'year(datum.CRASH_DATETIME)',
   hours = 'hours(datum.CRASH_DATETIME)'
@@ -118,12 +118,13 @@ avg_kills_line = alt.Chart(collisions).mark_trail().encode(
     groupby=['year', 'hours']
 )
 
-c3 = (avg_kills_line + error_bar).properties(
-    width=600, 
+c3 = (avg_deaths_line + error_bar).properties(
+    title='Average collisions and deaths over time',
+    width=600,
     height=400
-).properties(
-    title='Average collisions and killings over time'
-)
+    ).configure_title(
+      anchor='middle', offset=25, fontSize=18, fontStyle='normal', fontWeight='normal'
+    )
 
 # ----------------------- Visualization 4 --------------------------- #
 
@@ -176,7 +177,7 @@ violin = alt.Chart().transform_density(
 facet = lambda coll_weather, title: alt.layer(violin, boxplot, data=coll_weather).facet(column='conditions:N').\
     resolve_scale(x=alt.ResolveMode("independent")).properties(title=alt.TitleParams(text=title, anchor="middle", align="center"))
 
-c5 = alt.hconcat(facet(coll_weather, "Summer 2018"),facet(coll_weather, "Sumer 2020")).configure_facet(
+c5 = alt.hconcat(facet(coll_weather_2018, "Summer 2018"),facet(coll_weather_2020, "Sumer 2020")).configure_facet(
     spacing=0,
 ).configure_header(
     titleOrient='bottom',
@@ -184,5 +185,7 @@ c5 = alt.hconcat(facet(coll_weather, "Summer 2018"),facet(coll_weather, "Sumer 2
 ).configure_view(
     stroke=None
 ).properties(
-    title='Collisions and Weather Conditions in 2018 and 2020',
-)
+    title='Collisions distribution for weather conditions',
+).configure_title(
+      anchor='middle', offset=25, fontSize=18, fontStyle='normal', fontWeight='normal'
+    )

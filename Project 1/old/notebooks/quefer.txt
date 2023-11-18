@@ -1,0 +1,14 @@
+Benet: 
+
+- 7, 3, 5, explicar weather
+
+
+Carlos: 
+
+- 6, 2, 4, 1
+
+
+- Zip_code millor tenirlo text -> postalCode
+- eliminar els que no tenen localitzacio??
+- CONTRIBUTING_FACTOR_VEHICLE3	CONTRIBUTING_FACTOR_VEHICLE4	CONTRIBUTING_FACTOR_VEHICLE5 eliminar??
+- Station Wagon/Sport Utility Vehicle -> SUV
