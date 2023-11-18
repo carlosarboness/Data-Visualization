@@ -3,94 +3,136 @@ import numpy as np
 import altair as alt
 import geopandas as gpd
 
-# -------------------------------------------------- #
+# ----------------------- Visualization 1 --------------------------- #
 
-frequent_collisions = pd.read_csv('../data/frequent-collisions.csv')
-vehicle_type = pd.read_csv('../data/vehicle_type.csv')
-geo_collisions = pd.read_csv('../data/geo_collisions.csv')
-gdf = pd.read_csv('../data/gdf.csv')
+collisions = pd.read_csv("../data/preprocessed-collisions-final.csv")
 
-# -------------------------------------------------- #
-
-paired_bar_chart = alt.Chart(frequent_collisions).mark_bar().encode(
+paired_bar_chart = alt.Chart(collisions).mark_bar().encode(
   x = alt.X('year:O', title = 'Type of day', axis=alt.Axis(title=None, labels=False, ticks=False)), 
-  y = alt.Y('count:Q', title = 'Number of collisions'),
+  y = alt.Y('count:Q', title = 'Number of collisions', axis=alt.Axis(offset=6)),
   color= alt.Color('year:O', scale = alt.Scale(scheme='tableau10')),
   column = alt.Column('DAY_WEEK:N', title='Day of the Week', 
-  sort=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], 
-  header=alt.Header(titleOrient='bottom', labelOrient='bottom', labelPadding=4))
+                      sort=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], 
+                      header=alt.Header(titleOrient='bottom', labelOrient='bottom', labelPadding=4))
 ).transform_calculate(
   year = 'year(datum.CRASH_DATETIME)',
 ).transform_aggregate(
-   count='count()',
-   groupby=['year', 'DAY_WEEK']
+  count='count()',
+  groupby=['year', 'DAY_WEEK']
 )
 
-slope_chart = alt.Chart(frequent_collisions).mark_line(point=True).encode(
-  x = alt.X('TYPE_DAY:O', title = 'Type of day'),
-  y = alt.Y('avg:Q', title = 'Number of collisions', axis=alt.Axis(title=None)),
-  color= alt.Color('year:O', scale = alt.Scale(scheme='tableau10')),
+slope_chart = alt.Chart(collisions).mark_line(point=True).encode(
+  x=alt.X('TYPE_DAY:O', title = 'Type of day'),
+  y=alt.Y('avg_collisions:Q', title = 'Average number of collisions'),
+  color=alt.Color('year:O', scale = alt.Scale(scheme='tableau10'), legend=alt.Legend(title='Year')),
 ).transform_calculate(
-  year = 'year(datum.CRASH_DATETIME)'
+  year='year(datum.CRASH_DATETIME)'
 ).transform_aggregate(
-   count='count()',
-   groupby=['year', 'DAY_WEEK', 'TYPE_DAY']
+  count='count()',
+  groupby=['year', 'DAY_WEEK', 'TYPE_DAY']
 ).transform_aggregate(
-    avg = 'mean(count)',
-    groupby=['year', 'TYPE_DAY']
+  avg_collisions = 'mean(count)',
+  groupby=['year', 'TYPE_DAY']
 )
 
 c1 = (paired_bar_chart | slope_chart).properties(
      title='Number of collisions by day of the week and year'
-).configure_title(anchor='middle').configure_view(stroke='transparent').resolve_scale(y='shared', x='independent', color='shared')
+).configure_title(
+  anchor='middle', offset=25, fontSize=18, fontStyle='normal', fontWeight='normal'
+).configure_view(
+  stroke='transparent'
+).resolve_scale(
+  y='shared'
+)
 
-# -------------------------------------------------- #
+# ----------------------- Visualization 2 --------------------------- #
+
+vehicle_type = pd.DataFrame({'vehicle_type': list(collisions['VEHICLE_TYPE_CODE1'].values) + list(collisions['VEHICLE_TYPE_CODE2'].values)})
+vehicle_type = vehicle_type.groupby('vehicle_type').size().reset_index(name='n_accidents')
+most_collisioned = list(vehicle_type.sort_values(by='n_accidents', ascending=False).head(10)['vehicle_type'])
+vehicle_type['vehicle_type'] = vehicle_type['vehicle_type'].apply(lambda x: x if x in most_collisioned else 'Others')
+vehicle_type = vehicle_type.groupby('vehicle_type').sum('counts').reset_index()
+vehicle_type = vehicle_type.sort_values(by='n_accidents', ascending=False)
 
 bar_chart = alt.Chart(vehicle_type).mark_bar().encode(
-    x=alt.X('counts:Q', title='Number of collisions'),
+    x=alt.X('n_accidents:Q', title='Number of collisions', scale=alt.Scale(domain=(0, 1e5 + 1))),
     y=alt.Y('vehicle_type:N', 
             sort=list(vehicle_type.loc[vehicle_type['vehicle_type'] != 'Others', 'vehicle_type']) + ['Others'], 
             title='Vehicle Type'),
     color=alt.condition(
-        alt.datum.vehicle_type == 'Others',
-        alt.value('brown'),
-        alt.Color('character:N', legend=alt.Legend(title='Ownership Type'), 
-                  scale=alt.Scale(domain=['Public', 'Private'], range=['#4daf4a', 'grey'])),
-    ),  
+            alt.datum.vehicle_type == 'Others', 
+            alt.value('grey'),
+            alt.value('steelblue')
+        )
+)
+    
+mean_line = alt.Chart(vehicle_type).mark_rule(color='red', strokeWidth=1.5).encode(
+        x = alt.X('mean(n_accidents):Q')
 )
 
-mean_line = alt.Chart(vehicle_type).mark_rule(color='red', strokeWidth=1.5).encode(x = alt.X('mean(counts):Q'))
-
-c2 = (bar_chart + mean_line).properties(
-   title=alt.TitleParams(text='Number of collisions by vehicle type', fontSize=14, subtitle='', offset=20),
-   width=300,
-   height=300
-).configure_title(anchor='middle').configure_view(stroke='transparent')
-
-# -------------------------------------------------- #
-
-choropleth_map = alt.Chart(gdf).mark_geoshape().encode(
-    alt.Color('normalized_by_area_count:Q', 
-              scale=alt.Scale(scheme='lightorange', domain=[0, 40]), 
-              legend = None),
+n_accidents_text = alt.Chart(vehicle_type).mark_text(align='left', dx=2, color='black', size=10).encode(
+        x=alt.X('n_accidents:Q'),
+        y=alt.Y('vehicle_type:N', 
+            sort=list(vehicle_type.loc[vehicle_type['vehicle_type'] != 'Others', 'vehicle_type']) + ['Others']),
+        text='n_accidents:Q'
 )
 
-borough_names = alt.Chart(geo_collisions).mark_text(fontWeight='bold', fontSize=11, color='black').encode(
-    latitude='mean_lat:Q',
-    longitude='mean_long:Q',
-    text='BOROUGH:N',
+c2 = (bar_chart + mean_line + n_accidents_text).properties(
+        title='Number of collisions by vehicle type'
+).configure_title(
+        anchor='middle', fontSize=16, fontStyle='normal', fontWeight='normal', offset=20
+).properties(
+    height=400 
+)
+
+
+# ----------------------- Visualization 3 --------------------------- #
+
+error_bar = alt.Chart(collisions).mark_errorbar(ticks=True).encode(
+    x=alt.X('hours:Q'),
+    y=alt.Y('count:Q',axis=alt.Axis(title=None), scale=alt.Scale(zero=False)),
+    color = alt.Color('year:O', scale = alt.Scale(scheme='tableau10'))
+).transform_calculate(
+  year = 'year(datum.CRASH_DATETIME)',
+  hours = 'hours(datum.CRASH_DATETIME)'
 ).transform_aggregate(
-    mean_lat='mean(LATITUDE)',
-    mean_long='mean(LONGITUDE)',
-    groupby=['BOROUGH']
+   count='count()',
+   groupby=['year', 'hours', 'CRASH_DATE']
 )
 
-c4 = (choropleth_map + borough_names).properties(
-    title=alt.TitleParams(text='Number of Collisions by PostalCode', fontSize=16, subtitle='', offset=20),
-).configure_title(anchor='middle')
+avg_kills_line = alt.Chart(collisions).mark_trail().encode(
+    x = alt.X('hours:Q', title='Time of day'),
+    y = alt.Y('avg_collisions:Q', title='Average number of collisions'),
+    color = alt.Color('year:O', scale = alt.Scale(scheme='tableau10'), title='Year'),
+    size = alt.Size('avg_killed:Q', title='Average killed')
+).transform_calculate(
+  year = 'year(datum.CRASH_DATETIME)',
+  hours = 'hours(datum.CRASH_DATETIME)'
+).transform_aggregate(
+   count_collisions='count()',
+   count_killed='sum(TOTAL_KILLED)',
+   groupby=['year', 'hours', 'CRASH_DATE']
+).transform_aggregate(
+    avg_collisions='mean(count_collisions)',
+    avg_killed='mean(count_killed)',
+    groupby=['year', 'hours']
+)
 
-# -------------------------------------------------- #
-collisions = pd.read_csv("../data/preprocessed-colisions.csv")
+c3 = (avg_kills_line + error_bar).properties(
+    width=600, 
+    height=400
+).properties(
+    title='Average collisions and killings over time'
+)
+
+# ----------------------- Visualization 4 --------------------------- #
+
+'''
+Given the various issues we've encountered in displaying this visualization on Streamlit, 
+we have decided to save the image beforehand to directly showcase it in the application.
+'''
+
+# ----------------------- Visualization 5 --------------------------- #
 
 weather_original = pd.read_csv("../data/weather.csv")
 weather = weather_original[['datetime', 'temp', 'precip', 'windspeed', 
