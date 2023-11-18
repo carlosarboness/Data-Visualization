@@ -149,9 +149,11 @@ coll_weather['conditions'] = coll_weather['conditions'].apply(lambda x: 'Rain, O
 coll_weather_2018 = coll_weather[coll_weather['year']==2018]
 coll_weather_2020 = coll_weather[coll_weather['year']==2020]
 
+width = 80
+
 boxplot = alt.Chart().mark_boxplot(color='black').encode(
     alt.Y(f'collisions:Q')
-).properties(width=100)
+).properties(width=width)
 
 violin = alt.Chart().transform_density(
     'collisions',
@@ -170,8 +172,8 @@ violin = alt.Chart().transform_density(
         axis=alt.Axis(labels=False, values=[0], grid=False, ticks=True),
     ),
 ).properties(
-    width=100,
-    height=400
+    width=width,
+    height=300
 )
 
 facet = lambda coll_weather, title: alt.layer(violin, boxplot, data=coll_weather).facet(column='conditions:N').\
@@ -188,4 +190,44 @@ c5 = alt.hconcat(facet(coll_weather_2018, "Summer 2018"),facet(coll_weather_2020
     title='Collisions distribution for weather conditions',
 ).configure_title(
       anchor='middle', offset=25, fontSize=18, fontStyle='normal', fontWeight='normal'
-    )
+)
+
+# ----------------------- Visualization 6 --------------------------- #
+
+deadly_accidents = collisions[['CRASH_DATE', 'TOTAL_KILLED', 'PEDESTRIANS_KILLED', 'CYCLIST_KILLED', 'MOTORIST_KILLED']]
+
+deadly_accidents = deadly_accidents[deadly_accidents['TOTAL_KILLED'] == deadly_accidents['PEDESTRIANS_KILLED'] + \
+                                                                        deadly_accidents['CYCLIST_KILLED'] + \
+                                                                        deadly_accidents['MOTORIST_KILLED']]
+
+deadly_accidents = deadly_accidents.drop(columns=['TOTAL_KILLED'])
+deadly_accidents['CRASH_DATE'] = pd.to_datetime(deadly_accidents['CRASH_DATE'])
+deadly_accidents['year'] = deadly_accidents['CRASH_DATE'].dt.year
+deadly_accidents = deadly_accidents.groupby('year').sum(['PEDESTRIANS_KILLED', 'CYCLIST_KILLED', 'MOTORIST_KILLED']).reset_index()
+
+deadly_accidents_melted = deadly_accidents.melt('year', var_name='type', value_name='killed')
+deadly_accidents_melted['type'] = deadly_accidents_melted['type'].apply(lambda x: x.split('_')[0].lower())
+deadly_accidents_melted = deadly_accidents_melted.sort_values(by=['year', 'killed'], ascending=False).reset_index(drop=True)
+
+mortal_collisions = alt.Chart(deadly_accidents_melted).mark_bar().encode(
+    x=alt.X('year:O', title='Year'),
+    y=alt.Y('sum(killed):Q', title='Number of deaths'),
+    color=alt.Color('type:N', scale=alt.Scale(scheme='set2'), legend=alt.Legend(title='Type of user')),
+    order=alt.Order('type', sort='ascending'),
+).properties(
+    height=500
+)
+
+deadly_accidents_melted['position'] = [61+15, 61+38+15, 15, 43+5, 43+40+5, 5]
+
+number_of_deaths = alt.Chart(deadly_accidents_melted).mark_text(color='white', dy=7).encode(
+    x=alt.X('year:O', title='Year'),
+    y=alt.Y('position:Q', title='Number of deaths'),
+    text=alt.Text('killed:Q', format='.0f')
+)
+
+c6 = (mortal_collisions + number_of_deaths).properties(
+     title='Number of deaths by type of user and year'
+).configure_title(
+  anchor='middle', offset=25, fontSize=16, fontStyle='normal', fontWeight='normal'
+)

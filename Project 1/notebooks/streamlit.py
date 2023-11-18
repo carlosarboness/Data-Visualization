@@ -34,12 +34,23 @@ with st.container():
 
     with col2: 
         st.image('../data/c4.png', use_column_width=True)
+        
+        # add dome vertical space
+        st.write("")
+        st.write("")
+        st.write("")
+        
         st.altair_chart(c2, use_container_width=True)
 
-with st.container():    
+with st.container():
     
-    left_co, cent_co, last_co = st.columns([1, 5, 5])
-    cent_co.altair_chart(c5, use_container_width=True)
+    col1, col2 = st.columns([1, 3])
+    
+    with col1: 
+        col1.altair_chart(c6, use_container_width=True)
+
+    with col2:
+        col2.altair_chart(c5, use_container_width=True)
 
 st.markdown("---")
 
@@ -60,4 +71,5 @@ st.write("In the map in the top-right chart, we can observe areas with a higher 
 st.write("### Is there a correlation between weather conditions and accidents?")
 st.write("In the bottom, we can see two violin plots juxtaposed, one for each year (2018 and 2020). The x-axis represents the weather conditions, and the y-axis represents the number of accidents per day. The width of the violin shows the distribution of the data, and the boxplot inside the violin shows the median and quartiles of the data. \n The first thing we can observe is that the distribution of the data is wider in 2020 than in 2018, which means that there is more variance in the number of collisions. Furthermore, we see that, in 2018, the median of the number of collisions is higher with rain conditions but with the other weather conditions there is not a significant difference between the number of collisions. In 2020 we do not see enough evidence to conclude that a type of weather condition is more likely to cause an accident. These probably happens because in 2020 there was a lockdown and people were not driving as much as in 2018 so there were less cars on the road and the weather conditions did not affect as much as in 2018. In general we conclude that despite having some evidence, it is not enough to conclude that there is a correlation between weather conditions and accidents. If there was, we would be able to see it in the distribution of the data, which would be more concentrated in some weather conditions than in others. \n The drawbacks of this visualization is that we have not encoded any quantitative variable of the weather conditions because since there are a lot of them, any plot is good enough to be able to see them toghether easily. For that we ended up choosing the weather conditions as a categorical variable which takes into account all the quantitative variables of the weather conditions.")
 
-
+st.write("### What is the annual fatality count in accidents in New York, and how does that total break down by user type, including pedestrians, cyclists, and motorists?")
+st.write("In the bottom-left chart, we can observe the number of fatalities in accidents depending on the year (summer). Looking at the length of the first bar, we can see that in 2018 (summer), there were 88 fatal accidents, and in 2020, there were 114, an increase of 26. We notice that fatal accidents constitute a very small percentage of the total accidents, indicating that typically, there are few accidents resulting in fatalities. This is surprising, as shown in the top-left chart, where there are many more accidents in 2018 than in 2020, yet in 2020, they are more lethal. Examining the numbers within each color of the bar chart allows us to compare the number of fatalities each year based on the type of user. We observe that the most significant difference is in the number of motorist deaths, which has increased by 18.")
