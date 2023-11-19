@@ -7,12 +7,12 @@ import geopandas as gpd
 
 collisions = pd.read_csv("../data/preprocessed-collisions-final.csv")
 
-paired_bar_chart = alt.Chart(collisions).mark_bar().encode(
-  x = alt.X('year:O', title = 'Type of day', axis=alt.Axis(title=None, labels=False, ticks=False)), 
+paired_bar_chart = alt.Chart(collisions[['CRASH_DATETIME', 'DAY_WEEK' ]]).mark_bar().encode(
+  x = alt.X('year:O', title = 'Type of day', axis=alt.Axis(title=None, labels=False, ticks=False)),
   y = alt.Y('count:Q', title = 'Number of collisions', axis=alt.Axis(offset=6)),
-  color= alt.Color('year:O', scale = alt.Scale(scheme='tableau10')),
-  column = alt.Column('DAY_WEEK:N', title='Day of the Week', 
-                      sort=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], 
+  color= alt.Color('year:O', scale = alt.Scale(range=['#ff7f0e', '#9467bd'])),
+  column = alt.Column('DAY_WEEK:N', title='Day of the Week',
+                      sort=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                       header=alt.Header(titleOrient='bottom', labelOrient='bottom', labelPadding=4))
 ).transform_calculate(
   year = 'year(datum.CRASH_DATETIME)',
@@ -21,10 +21,10 @@ paired_bar_chart = alt.Chart(collisions).mark_bar().encode(
   groupby=['year', 'DAY_WEEK']
 )
 
-slope_chart = alt.Chart(collisions).mark_line(point=True).encode(
+slope_chart = alt.Chart(collisions[['CRASH_DATETIME', 'DAY_WEEK', 'TYPE_DAY']]).mark_line(point=True).encode(
   x=alt.X('TYPE_DAY:O', title = 'Type of day'),
   y=alt.Y('avg_collisions:Q', title = 'Average number of collisions'),
-  color=alt.Color('year:O', scale = alt.Scale(scheme='tableau10'), legend=alt.Legend(title='Year')),
+  color=alt.Color('year:O', scale = alt.Scale(range=['#ff7f0e', '#9467bd']), legend=alt.Legend(title='Year')),
 ).transform_calculate(
   year='year(datum.CRASH_DATETIME)'
 ).transform_aggregate(
@@ -88,10 +88,10 @@ c2 = (bar_chart + mean_line + n_accidents_text).properties(
 
 # ----------------------- Visualization 3 --------------------------- #
 
-error_bar = alt.Chart(collisions).mark_errorbar(ticks=True).encode(
+error_bar = alt.Chart(collisions[['CRASH_DATETIME', 'CRASH_DATE']]).mark_errorbar(ticks=True).encode(
     x=alt.X('hours:Q'),
     y=alt.Y('count:Q',axis=alt.Axis(title=None), scale=alt.Scale(zero=False)),
-    color = alt.Color('year:O', scale = alt.Scale(scheme='tableau10'))
+    color = alt.Color('year:O', scale = alt.Scale(range=['#ff7f0e', '#9467bd']))
 ).transform_calculate(
   year = 'year(datum.CRASH_DATETIME)',
   hours = 'hours(datum.CRASH_DATETIME)'
@@ -100,22 +100,22 @@ error_bar = alt.Chart(collisions).mark_errorbar(ticks=True).encode(
    groupby=['year', 'hours', 'CRASH_DATE']
 )
 
-avg_deaths_line = alt.Chart(collisions).mark_trail().encode(
+avg_deaths_line = alt.Chart(collisions[['CRASH_DATETIME', 'CRASH_DATE','TOTAL_KILLED']]).mark_trail().encode(
     x = alt.X('hours:Q', title='Time of day'),
     y = alt.Y('avg_collisions:Q', title='Average number of collisions'),
-    color = alt.Color('year:O', scale = alt.Scale(scheme='tableau10'), title='Year'),
+    color = alt.Color('year:O', scale = alt.Scale(range=['#ff7f0e', '#9467bd']), title='Year'),
     size = alt.Size('avg_killed:Q', title='Average deaths')
 ).transform_calculate(
   year = 'year(datum.CRASH_DATETIME)',
   hours = 'hours(datum.CRASH_DATETIME)'
 ).transform_aggregate(
-   count_collisions='count()',
-   count_killed='sum(TOTAL_KILLED)',
-   groupby=['year', 'hours', 'CRASH_DATE']
+  count_collisions='count()',
+  count_killed='sum(TOTAL_KILLED)',
+  groupby=['year', 'hours', 'CRASH_DATE']
 ).transform_aggregate(
-    avg_collisions='mean(count_collisions)',
-    avg_killed='mean(count_killed)',
-    groupby=['year', 'hours']
+  avg_collisions='mean(count_collisions)',
+  avg_killed='mean(count_killed)',
+  groupby=['year', 'hours']
 )
 
 c3 = (avg_deaths_line + error_bar).properties(
