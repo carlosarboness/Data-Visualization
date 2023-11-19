@@ -212,7 +212,7 @@ deadly_accidents_melted = deadly_accidents_melted.sort_values(by=['year', 'kille
 mortal_collisions = alt.Chart(deadly_accidents_melted).mark_bar().encode(
     x=alt.X('year:O', title='Year'),
     y=alt.Y('sum(killed):Q', title='Number of deaths'),
-    color=alt.Color('type:N', scale=alt.Scale(scheme='set2'), legend=alt.Legend(title='Type of user')),
+    color=alt.Color('type:N', scale=alt.Scale(scheme='accent'), legend=alt.Legend(title='Type of user')),
     order=alt.Order('type', sort='ascending'),
 ).properties(
     height=500
