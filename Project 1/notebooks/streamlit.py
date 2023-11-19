@@ -1,4 +1,7 @@
 import streamlit as st
+
+from streamlit.components.v1 import html
+import base64
 from altair_visualizations import *
 
 st.set_page_config(layout="wide")
@@ -24,31 +27,35 @@ with st.sidebar:
     )
 
 
+with open ("../data/c4.svg", "r") as f:
+    c4 = f.read()
+
 with st.container():
-    
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([1.1, 1])
 
     with col1:
         st.altair_chart(c1, use_container_width=True)
+    with col2:  
+        
+        b64 = base64.b64encode(c4.encode("utf-8")).decode("utf-8")
+        html = f'<img src="data:image/svg+xml;base64,{b64}" style="width: {"100%"}; height: {"auto"};"/>'
+        st.write(html, unsafe_allow_html=True, use_container_width=True)
+            
+        # st.image("c4.svg", use_column_width=True)
+        
+with st.container():  
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
         st.altair_chart(c3, use_container_width=True)
-
-    with col2: 
-        st.image('../data/c4.png', use_column_width=True)
-        
-        # add dome vertical space
-        st.write("")
-        st.write("")
-        st.write("")
-        
+    with col2:
         st.altair_chart(c2, use_container_width=True)
 
 with st.container():
-    
     col1, col2 = st.columns([1, 3])
     
     with col1: 
         col1.altair_chart(c6, use_container_width=True)
-
     with col2:
         col2.altair_chart(c5, use_container_width=True)
 
@@ -60,7 +67,7 @@ st.write("### Are accidents more frequent during weekdays or weekends? Is there 
 st.write("In the top-left chart, orange bars represent data from the year 2018, while blue bars represent data from 2020 (before and after COVID, respectively). Analyzing the length of the bars reveals a consistent trend: on all days of the week, the total number of accidents occurring on each day is considerably higher (more than double in all cases) before COVID compared to after. Furthermore, in the right slope chart, where colors correspond to those in the paired bar chart, a decreasing trend is evident in the number of accidents on weekdays versus weekends. Weekends consistently exhibit a lower average number of accidents both before and after COVID. Notably, this difference intensifies before COVID, indicating a more pronounced contrast. However, in 2020, the difference is not as significant. From this graph, we can infer that the number of traffic accidents has decreased post-COVID, and this reduction in accidents on weekends has followed a similar trend, with a slight decrease in the decline. One possible explanation is the reduced use of both public and private transportation on weekends due to decreased overall activity (work, school, etc.).")
 
 st.write("### Is there any type of vehicle more prone to participate in accidents?")
-st.write("In the middle-right chart, we can observe the number of accidents involving different types of vehicles in both 2018 and 2020 (from June to September). In this case, we cannot directly answer the question about which vehicles are more prone to accidents, as it would require knowledge of the number of vehicles of each type in New York (or circulating in New York). Quantifying this is a challenging task since, for example, although we see that Sedans have the highest number of accidents, there are likely also many more Sedan-type cars on the roads in New York. The same may be true for SUVs. By examining the length of the bars or directly looking at the numbers at the end of each bar, we can note that sedans and SUVs are the vehicle types most frequently involved in accidents, overshadowing other vehicles such as taxis, pickups, bicycles, etc. Despite the difficulty in quantifying the total number of each vehicle type, what we can conclude is that Sedans and SUVs mentioned earlier contribute to a significant percentage of accidents in New York. By observing that the bars are well to the right of the red bar (mean accidents), it's evident that these values are well above the average accidents per vehicle. It's also noteworthy that taxis, although likely fewer in number, still have a notable frequency of accidents.")
+st.write("In the chart located in the middle-right section, we can observe the percentage distribution of accidents involving different types of vehicles in both 2018 and 2020 (from June to September). Answering the question about which vehicles are more prone to accidents isn't straightforward in this context, as it necessitates knowledge of the total number of each vehicle type in New York (or those circulating in the city). Quantifying this information is challenging because, for instance, even though we observe that Sedans account for 45% of accidents, there are likely a greater number of Sedan-type cars on New York roads. A similar situation may apply to SUVs. By examining the length of the bars or directly inspecting the numbers at the end of each bar, we can discern that sedans and SUVs are the most frequently involved vehicle types, overshadowing others like taxis, pickups, bicycles, etc.Despite the challenge in precisely quantifying the total number of each vehicle type, a notable observation is that Sedans and SUVs contribute to a significant percentage of accidents in New York. Specifically, these two types of vehicles together are responsible for approximately 80% of all accidents in the city, which is a substantial figure. Additionally, it's worth mentioning that taxis, although likely fewer in number, still exhibit a noteworthy frequency of accidents.")
 
 st.write("### At what time of the day are accidents more common?")
 st.write("In the middle-left, you can see a line chart with the average accidents per hour along the summers of 2018 and 2020. A different color for each year has been used as well as the line thickness to encode the killed people. Regarding the question asked about what time of the day are accidents more common, a clear trend emerges: higher collision rates during the day and lower rates during the night. This pattern aligns with the increased presence of cars on the road during daylight hours and decreased activity during nighttime. Further we can distinguish different patterns between morning, afternoon, and evening periods. Mornings exhibit fewer collisions, likely attributed to work-related activities, whereas afternoons register higher incidents, potentially linked to leisure activities and transporting children to extracurricular activities. Evenings witness a decline in collisions as people conclude their activities and are back home.  \n  Furthermore, by looking at the line thickness we can see that the deathliest hours are at 20:00 and 04:00 in 2018, and between 19:00 and 00:00, as well as at 04:00 in 2020. The deaths in the late night coincide with the times when people are returning home after socializing, often under the influence of alcohol, which make the accidents more dangerous. However, beeing able to see that is more difficult because, one of the drawbacks of this visualization is that the line thickness is not easy to compare. Another criticism is that the error bars make the patterns a difficult to read. Dispite that it is important to keep them in the visualization because they show the variance of the data.")

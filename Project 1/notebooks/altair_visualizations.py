@@ -19,6 +19,8 @@ paired_bar_chart = alt.Chart(collisions[['CRASH_DATETIME', 'DAY_WEEK' ]]).mark_b
 ).transform_aggregate(
   count='count()',
   groupby=['year', 'DAY_WEEK']
+).properties(
+  width=35
 )
 
 slope_chart = alt.Chart(collisions[['CRASH_DATETIME', 'DAY_WEEK', 'TYPE_DAY']]).mark_line(point=True).encode(
@@ -53,9 +55,10 @@ most_collisioned = list(vehicle_type.sort_values(by='n_accidents', ascending=Fal
 vehicle_type['vehicle_type'] = vehicle_type['vehicle_type'].apply(lambda x: x if x in most_collisioned else 'Others')
 vehicle_type = vehicle_type.groupby('vehicle_type').sum('counts').reset_index()
 vehicle_type = vehicle_type.sort_values(by='n_accidents', ascending=False)
+vehicle_type['percentage'] = round(vehicle_type['n_accidents'] / vehicle_type['n_accidents'].sum() * 100, 1)
 
-bar_chart = alt.Chart(vehicle_type).mark_bar().encode(
-    x=alt.X('n_accidents:Q', title='Number of collisions', scale=alt.Scale(domain=(0, 1e5 + 1))),
+percentatge_bar_chart = alt.Chart(vehicle_type).mark_bar().encode(
+    x=alt.X('percentage:Q', title='Percentage of collisions'),
     y=alt.Y('vehicle_type:N', 
             sort=list(vehicle_type.loc[vehicle_type['vehicle_type'] != 'Others', 'vehicle_type']) + ['Others'], 
             title='Vehicle Type'),
@@ -65,33 +68,30 @@ bar_chart = alt.Chart(vehicle_type).mark_bar().encode(
             alt.value('steelblue')
         )
 )
-    
-mean_line = alt.Chart(vehicle_type).mark_rule(color='red', strokeWidth=1.5).encode(
-        x = alt.X('mean(n_accidents):Q')
-)
 
-n_accidents_text = alt.Chart(vehicle_type).mark_text(align='left', dx=2, color='black', size=10).encode(
-        x=alt.X('n_accidents:Q'),
+percentatge_text = alt.Chart(vehicle_type).mark_text(align='left', dx=2, color='black', size=10).encode(
+        x=alt.X('percentage:Q'),
         y=alt.Y('vehicle_type:N', 
             sort=list(vehicle_type.loc[vehicle_type['vehicle_type'] != 'Others', 'vehicle_type']) + ['Others']),
-        text='n_accidents:Q'
+        text='percentage:Q'
 )
 
-c2 = (bar_chart + mean_line + n_accidents_text).properties(
-        title='Number of collisions by vehicle type'
+c2 = (percentatge_bar_chart + percentatge_text).properties(
+        title='Percentage of the total collisions by vehicle type'
 ).configure_title(
         anchor='middle', fontSize=16, fontStyle='normal', fontWeight='normal', offset=20
 ).properties(
-    height=400 
+        width=500, 
+        height=400
 )
 
 
 # ----------------------- Visualization 3 --------------------------- #
 
-error_bar = alt.Chart(collisions[['CRASH_DATETIME', 'CRASH_DATE']]).mark_errorbar(ticks=True).encode(
+error_bar = alt.Chart(collisions).mark_errorbar(ticks=True).encode(
     x=alt.X('hours:Q'),
-    y=alt.Y('count:Q',axis=alt.Axis(title=None), scale=alt.Scale(zero=False)),
-    color = alt.Color('year:O', scale = alt.Scale(range=['#ff7f0e', '#9467bd']))
+    y=alt.Y('count:Q', title='Average number of collisions'),
+    color = alt.Color('year:O', scale = alt.Scale(scheme='tableau10'))
 ).transform_calculate(
   year = 'year(datum.CRASH_DATETIME)',
   hours = 'hours(datum.CRASH_DATETIME)'
@@ -212,7 +212,7 @@ deadly_accidents_melted = deadly_accidents_melted.sort_values(by=['year', 'kille
 mortal_collisions = alt.Chart(deadly_accidents_melted).mark_bar().encode(
     x=alt.X('year:O', title='Year'),
     y=alt.Y('sum(killed):Q', title='Number of deaths'),
-    color=alt.Color('type:N', scale=alt.Scale(scheme='set2'), legend=alt.Legend(title='Type of user')),
+    color=alt.Color('type:N', scale=alt.Scale(scheme='accent'), legend=alt.Legend(title='Type of user')),
     order=alt.Order('type', sort='ascending'),
 ).properties(
     height=500
@@ -220,7 +220,7 @@ mortal_collisions = alt.Chart(deadly_accidents_melted).mark_bar().encode(
 
 deadly_accidents_melted['position'] = [61+15, 61+38+15, 15, 43+5, 43+40+5, 5]
 
-number_of_deaths = alt.Chart(deadly_accidents_melted).mark_text(color='white', dy=7).encode(
+number_of_deaths = alt.Chart(deadly_accidents_melted).mark_text(color='black', dy=7).encode(
     x=alt.X('year:O', title='Year'),
     y=alt.Y('position:Q', title='Number of deaths'),
     text=alt.Text('killed:Q', format='.0f')
