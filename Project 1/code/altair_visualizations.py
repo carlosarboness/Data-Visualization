@@ -5,7 +5,12 @@ import geopandas as gpd
 
 # ----------------------- Visualization 1 --------------------------- #
 
-collisions = pd.read_csv("../data/preprocessed-collisions-final.csv")
+collisions = pd.read_csv("../data/preprocessed-collisions.csv", dtype={'ZIP_CODE': str})
+collisions['CRASH_DATETIME'] = pd.to_datetime(collisions['CRASH_DATE'] + ' ' + collisions['CRASH_TIME'], format='%m/%d/%Y %H:%M')
+collisions = collisions.drop(columns=['CRASH_TIME'])
+collisions['DAY_WEEK'] = collisions['CRASH_DATETIME'].dt.day_name()
+collisions['TYPE_DAY'] = collisions['DAY_WEEK'].apply(lambda day: 'Weekend' if day in ['Saturday', 'Sunday'] else 'Weekday')
+collisions = collisions[['CRASH_DATETIME', 'CRASH_DATE', 'DAY_WEEK', 'TYPE_DAY', 'BOROUGH', 'ZIP_CODE', 'LATITUDE', 'LONGITUDE', 'VEHICLE_TYPE_CODE1', 'VEHICLE_TYPE_CODE2','TOTAL_KILLED', 'PEDESTRIANS_KILLED', 'CYCLIST_KILLED', 'MOTORIST_KILLED' ]]
 
 paired_bar_chart = alt.Chart(collisions[['CRASH_DATETIME', 'DAY_WEEK' ]]).mark_bar().encode(
   x = alt.X('year:O', title = 'Type of day', axis=alt.Axis(title=None, labels=False, ticks=False)),
