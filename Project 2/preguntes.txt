@@ -4,3 +4,4 @@
 4. Que dia se refiere a dia de la semana o de mes
 5. Como hacer brush en el mapa
 6. Como añadir grid a solo un chart
+7. Disposicion de las leyendas
