@@ -1,3 +1,5 @@
 1. Como ordenar un grafico descencedente si tenemos un dominio definido
 2. Como hacer mas grande el grafico de radial chart
 3. Como hacer group by para poner mapas
+4. Que dia se refiere a dia de la semana o de mes
+5. Como hacer brush en el mapa
