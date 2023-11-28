@@ -5,3 +5,4 @@
 5. Como hacer brush en el mapa
 6. Como añadir grid a solo un chart
 7. Disposicion de las leyendas
+8. Peruqe no funciona el brush con algunos charts
