@@ -1,4 +1,6 @@
 import streamlit as st
+from altair_visualizations import *
+import base64
 
 st.set_page_config(layout="wide")
 
@@ -21,3 +23,5 @@ with st.sidebar:
         Source code: [GitHub](https://github.com/carlosarboness/Data-Visualization)
         """
     )
+
+st.altair_chart((alt.hconcat(c4, c2, spacing=90) | c1) & ((c3 & c6) | c5))

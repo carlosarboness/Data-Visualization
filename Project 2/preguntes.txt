@@ -1,8 +1,19 @@
 1. Como ordenar un grafico descencedente si tenemos un dominio definido
-2. Como hacer mas grande el grafico de radial chart
-3. Como hacer group by para poner mapas
-4. Que dia se refiere a dia de la semana o de mes
-5. Como hacer brush en el mapa
-6. Como añadir grid a solo un chart
-7. Disposicion de las leyendas
-8. Peruqe no funciona el brush con algunos charts
+2. Como añadir grid a solo un chart ### - s'ho mirarà, sino de moment passar d'ell
+3. Cal llegenda de heatmap si ja hi ha numeros?
+
+
+A FER:
+- Canviar weather conditions plot --> Carlos
+- Fer interactiu les llegendes de borough --> Benet
+- Day of the week, posar en gris quan selecciones dies --> Benet
+- Brush, posar en gris els punts de fora --> Benet
+- Brush - hours: mirar que funcioni la sel·lecció --> Benet
+- Esborrar botons innecesaris --> Carlos
+- Disposicion de las leyendas ### .resove - legends independently --> Carlos
+- Afegir barres de borough i llegenda dins al mapa --> Carlos
+
+
+MILLORES AL FINAL
+- Botó de més interaccions
+- Canviar tipografia títols
