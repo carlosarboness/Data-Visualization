@@ -4,16 +4,15 @@
 
 
 A FER:
-- Canviar weather conditions plot --> Carlos
-- Fer interactiu les llegendes de borough --> Benet
 - Day of the week, posar en gris quan selecciones dies --> Benet
-- Brush, posar en gris els punts de fora --> Benet
-- Brush - hours: mirar que funcioni la sel·lecció --> Benet
-- Esborrar botons innecesaris --> Carlos
-- Disposicion de las leyendas ### .resove - legends independently --> Carlos
-- Afegir barres de borough i llegenda dins al mapa --> Carlos
+- Brush --> Benet
+	- posar en gris els punts de fora
+	- hours: mirar que funcioni la sel·lecció 
+	- Barres ficar de color subtotal
+- Esbozar botons innecesaris --> Carlos
 
 
 MILLORES AL FINAL
 - Botó de més interaccions
 - Canviar tipografia títols
+- Definir bé els colors
