@@ -158,6 +158,7 @@ c41 = alt.Chart(collisions).mark_bar().encode(
 # -------------------------------  c5 ------------------------------------
 
 selection_hour = alt.selection_interval(encodings=['x'])
+selection_hour_point = alt.selection_point(encodings=['x'])
 
 c5  = alt.Chart(collisions).mark_line(point=True).encode(
     x=alt.X('HOUR:O', title='Hour of Day', scale=alt.Scale(domain=np.arange(1, 24)), axis=alt.Axis(labelAngle=0)),
@@ -168,7 +169,7 @@ c5  = alt.Chart(collisions).mark_line(point=True).encode(
     count = 'count()',
     groupby=['MONTH', 'DAY_WEEK', 'BOROUGH', 'VEHICLE_TYPE_CODE1', 'HOUR', 'icon', 'DAY']
 ).add_params(
-    selection_month, selection_hour
+    selection_month, selection_hour, selection_hour_point
 ).transform_filter(
     selection_month 
 ).properties(
