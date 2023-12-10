@@ -1,15 +1,8 @@
-1. Como ordenar un grafico descencedente si tenemos un dominio definido
+1. Como ordenar un grafico descencedente si tenemos un dominio definido, hace falta?
 2. Como añadir grid a solo un chart ### - s'ho mirarà, sino de moment passar d'ell
 3. Cal llegenda de heatmap si ja hi ha numeros?
-
-
-A FER:
-- Day of the week, posar en gris quan selecciones dies --> Benet
-- Brush --> Benet
-	- posar en gris els punts de fora
-	- hours: mirar que funcioni la sel·lecció 
-	- Barres ficar de color subtotal
-- Esbozar botons innecesaris --> Carlos
+4. Colors tot blau, vermell line chart??
+5. Brush interaccio no funciona amb alguns charts
 
 
 MILLORES AL FINAL

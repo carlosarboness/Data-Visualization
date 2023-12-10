@@ -1,6 +1,5 @@
 import streamlit as st
 from altair_visualizations import *
-import base64
 
 st.set_page_config(layout="wide")
 
@@ -24,4 +23,4 @@ with st.sidebar:
         """
     )
 
-st.altair_chart((alt.hconcat(c4, c2, spacing=90) | c1) & ((c3 & c6) | c5))
+st.altair_chart((((ny_city + c4) & c41) & c6) | ((c1 | c2) & c3 & c5))
