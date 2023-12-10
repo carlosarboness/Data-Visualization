@@ -6,7 +6,7 @@ import altair as alt
 weather = pd.read_csv('data/weather2018.csv')
 weather = weather[['datetime', 'icon']]  
 weather['datetime'] = pd.to_datetime(weather['datetime']) 
-weather.head()
+weather['icon'] = weather['icon'].str.replace('-day', '')
 
 collisions = pd.read_csv('data/preprocessed-collisions-2.csv')
 collisions['CRASH_DATETIME'] = pd.to_datetime(collisions['CRASH_DATETIME'])
@@ -104,7 +104,8 @@ base = alt.Chart(collisions).encode(
 heatmap = base.mark_rect().encode(
     color = alt.condition(selection_day, 'sum(count):Q', alt.value('lightgray'), legend=None),
 ).properties(
-    width=550
+    width=550,
+    height=150
 )
 
 c3 = heatmap + base.mark_text(baseline='middle', color='white').encode(text='sum(count):Q')
@@ -152,10 +153,10 @@ c41 = alt.Chart(collisions).mark_bar().encode(
     selection_month & brush_map
 ).properties(
     width=500,
-    height=150
+    height=175
 )
 
-# -------------------------------  c5 ------------------------------------
+# -------------------------------- c5 ------------------------------------
 
 selection_hour = alt.selection_interval(encodings=['x'])
 selection_hour_point = alt.selection_point(encodings=['x'])
@@ -174,7 +175,8 @@ c5  = alt.Chart(collisions).mark_line(point=True).encode(
     selection_month 
 ).properties(
     title='Number of collisions by hour of day',
-    width=550
+    width=550,
+    height=200
 )
 
 # -------------------------------  c6 ------------------------------------
@@ -206,10 +208,10 @@ c6 = base.mark_point(filled=True) + base.mark_rule()
 
 # Interactions
 
-c1 = c1.transform_filter(selection_vehicle & selection_borough & selection_dayweek & selection_hour & brush_map & selection_day)
-c2 = c2.transform_filter(selection_weather & selection_borough & selection_dayweek & selection_hour & brush_map & selection_day)
-c3 = c3.transform_filter(selection_vehicle & selection_weather & selection_dayweek & selection_hour & brush_map & selection_weather)
-c4 = c4.transform_filter(selection_vehicle & selection_borough & selection_dayweek & selection_hour & selection_day & selection_weather)
-c41 = c41.transform_filter(selection_vehicle & selection_dayweek & selection_hour & selection_day & selection_weather & brush_map)
+c1 = c1.transform_filter(selection_vehicle & selection_borough & selection_dayweek & selection_hour & brush_map & selection_day & selection_hour_point)
+c2 = c2.transform_filter(selection_weather & selection_borough & selection_dayweek & selection_hour & brush_map & selection_day & selection_hour_point)
+c3 = c3.transform_filter(selection_vehicle & selection_weather & selection_dayweek & selection_hour & brush_map & selection_weather & selection_hour_point)
+c4 = c4.transform_filter(selection_vehicle & selection_borough & selection_dayweek & selection_hour & selection_day & selection_weather & selection_hour_point)
+c41 = c41.transform_filter(selection_vehicle & selection_dayweek & selection_hour & selection_day & selection_weather & brush_map & selection_hour_point)
 c5 = c5.transform_filter(selection_vehicle & selection_borough & selection_dayweek & selection_day & selection_weather & brush_map)
-c6 = c6.transform_filter(selection_vehicle & selection_borough & selection_hour & selection_day & selection_weather & brush_map)
+c6 = c6.transform_filter(selection_vehicle & selection_borough & selection_hour & selection_day & selection_weather & brush_map & selection_hour_point)
