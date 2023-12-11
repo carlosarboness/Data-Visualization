@@ -3,6 +3,8 @@
 3. Cal llegenda de heatmap si ja hi ha numeros?
 4. Colors tot blau, vermell line chart??
 5. Brush interaccio no funciona amb alguns charts
+6. Preguntar deixar barres del total o no en alguns
+7. Que opina dels emojis?? Potser posar com etiqueta
 
 
 MILLORES AL FINAL

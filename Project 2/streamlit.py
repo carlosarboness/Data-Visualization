@@ -23,4 +23,4 @@ with st.sidebar:
         """
     )
 
-st.altair_chart((((ny_city + c4) & c41) & c6) | ((c1 | c2) & c3 & c5))
+st.altair_chart(final_chart)

@@ -102,14 +102,15 @@ base = alt.Chart(collisions).encode(
 )
 
 heatmap = base.mark_rect().encode(
-    color = alt.condition(selection_day, 'sum(count):Q', alt.value('lightgray'), legend=None),
+    color = alt.condition(selection_day, 
+                          alt.Color('sum(count):Q', scale=alt.Scale(scheme='lightgreyred'), legend=None),
+                          alt.value('lightgray'), legend=None),
 ).properties(
     width=550,
     height=150
 )
 
-c3 = heatmap + base.mark_text(baseline='middle', color='white').encode(text='sum(count):Q')
-
+c3 = heatmap + base.mark_text(baseline='middle', color='black').encode(text='sum(count):Q')
 
 # -------------------------------  c4  -------------------------------------
 
@@ -122,7 +123,9 @@ brush_map = alt.selection_interval()
 c4 = alt.Chart(collisions).mark_point(size=3, opacity=0.7, filled=True).encode(
     latitude='LATITUDE:Q',
     longitude='LONGITUDE:Q',
-    color = alt.condition(brush_map, alt.Color('BOROUGH:N').legend(None), alt.value('lightgray')),
+    color = alt.condition(brush_map, 
+                          alt.Color('BOROUGH:N', legend=None, scale=alt.Scale(scheme='dark2')), 
+                          alt.value('lightgray')),
     tooltip=['BOROUGH:N', 'VEHICLE_TYPE_CODE1:N', 'icon:N', 'HOUR:O', 'MONTH:N', 'DAY_WEEK:N', 'DAY:O'],
 ).add_params(
     selection_month, brush_map
@@ -200,7 +203,8 @@ base = alt.Chart(collisions).encode(
     selection_month
 ).properties(
     title='Number of collisions by day of week',
-    width=500
+    width=500,
+    height=150
 )
 
 c6 = base.mark_point(filled=True) + base.mark_rule()
@@ -215,3 +219,7 @@ c4 = c4.transform_filter(selection_vehicle & selection_borough & selection_daywe
 c41 = c41.transform_filter(selection_vehicle & selection_dayweek & selection_hour & selection_day & selection_weather & brush_map & selection_hour_point)
 c5 = c5.transform_filter(selection_vehicle & selection_borough & selection_dayweek & selection_day & selection_weather & brush_map)
 c6 = c6.transform_filter(selection_vehicle & selection_borough & selection_hour & selection_day & selection_weather & brush_map & selection_hour_point)
+
+# Final chart
+
+final_chart = (((((ny_city + c4) & c41) & c6) | ((c1 | c2) & c3 & c5)).configure_title(anchor='middle'))
