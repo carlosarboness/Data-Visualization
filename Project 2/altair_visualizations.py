@@ -2,23 +2,7 @@ import pandas as pd
 import numpy as np
 import altair as alt
 
-# Preprocessing
-weather = pd.read_csv('data/weather2018.csv')
-weather = weather[['datetime', 'icon']]  
-weather['datetime'] = pd.to_datetime(weather['datetime']) 
-weather['icon'] = weather['icon'].str.replace('-day', '')
-
-collisions = pd.read_csv('data/preprocessed-collisions-2.csv')
-collisions['CRASH_DATETIME'] = pd.to_datetime(collisions['CRASH_DATETIME'])
-collisions['MONTH'] = collisions['CRASH_DATETIME'].dt.month_name() 
-collisions['HOUR'] = collisions['CRASH_DATETIME'].dt.hour
-collisions['DAY_WEEK'] = collisions['CRASH_DATETIME'].dt.day_name()
-collisions['DAY'] = collisions['CRASH_DATETIME'].dt.day
-
-collisions = collisions[['BOROUGH', 'ZIP_CODE', 'LATITUDE', 'LONGITUDE', 'CONTRIBUTING_FACTOR_VEHICLE1', 
-                         'VEHICLE_TYPE_CODE1', 'CRASH_DATETIME', 'MONTH', 'HOUR', 'DAY_WEEK', 'DAY']]
-collisions = collisions.merge(weather, how='left', left_on=collisions['CRASH_DATETIME'].dt.date, right_on=weather['datetime'].dt.date)
-collisions = collisions.drop(columns=['key_0', 'datetime'])
+collisions = pd.read_csv('data/preprocessed-collisions-final.csv') 
 
 options_month = list(collisions['MONTH'].unique()) 
 input_dropdown_month = alt.binding_select(options=options_month + [None], labels=options_month + ['All'], name='Month:  ')
@@ -38,9 +22,10 @@ collisions['weather_emoji'] = collisions['icon'].map(weather_icon_to_emoji)
 selection_weather = alt.selection_point(encodings=['x'])
 
 base = alt.Chart(collisions).encode(
-    x=alt.X('icon:N', title='Weather', scale=alt.Scale(domain=list(collisions['icon'].unique())), axis=alt.Axis(labelAngle=0)),
+    x=alt.X('icon:N', title='Weather', sort='-y', axis=alt.Axis(labelAngle=0)),
     y=alt.Y('sum(count):Q', title='Number of Collisions'),
-    color=alt.condition(selection_weather, alt.value('steelblue'), alt.value('lightgray'))
+    color=alt.condition(selection_weather, alt.value('steelblue'), alt.value('lightgray')), 
+    tooltip=['icon:N', 'sum(count):Q']
 ).transform_aggregate(
     count = 'count()',
     groupby=['MONTH', 'DAY_WEEK', 'BOROUGH', 'VEHICLE_TYPE_CODE1', 'HOUR', 'icon', 'DAY', 'weather_emoji']
@@ -54,7 +39,7 @@ base = alt.Chart(collisions).encode(
     width=275
 )
 
-c1 = base.mark_bar() + base.mark_text(dy=-5, size=30).encode(text='weather_emoji:N')
+c1 = base.mark_bar() + base.mark_text(dy=-10, size=30).encode(text='weather_emoji:N')
 
 collisions = collisions.drop(columns=['weather_emoji'])
 
@@ -62,14 +47,22 @@ collisions = collisions.drop(columns=['weather_emoji'])
 
 selection_vehicle = alt.selection_point(encodings=['x'])
 
+vehicle_type_to_emoji = {
+    'Taxi': '🚕',
+    'Ambulance': '🚑',
+    'Fire truck': '🚒'
+}
+
+collisions['vehicle_emoji'] = collisions['VEHICLE_TYPE_CODE1'].map(vehicle_type_to_emoji)
+
 base = alt.Chart(collisions).encode(
-    x=alt.X('VEHICLE_TYPE_CODE1:N', scale=alt.Scale(domain=list(collisions['VEHICLE_TYPE_CODE1'].unique())), title='Vehicle Type', axis=alt.Axis(labelAngle=0)),
+    x=alt.X('VEHICLE_TYPE_CODE1:N', sort='-y', title='Vehicle Type', axis=alt.Axis(labelAngle=0)),
     y=alt.Y('sum(count):Q', title='Number of Collisions'),
     color = alt.condition(selection_vehicle, alt.value('steelblue'), alt.value('lightgray')),
     tooltip=['VEHICLE_TYPE_CODE1:N', 'sum(count):Q'],
 ).transform_aggregate(
     count = 'count()',
-    groupby=['MONTH', 'DAY_WEEK', 'BOROUGH', 'VEHICLE_TYPE_CODE1', 'HOUR', 'icon', 'DAY']
+    groupby=['MONTH', 'DAY_WEEK', 'BOROUGH', 'VEHICLE_TYPE_CODE1', 'HOUR', 'icon', 'DAY', 'vehicle_emoji']
 ).add_params(
     selection_month, selection_vehicle
 ).transform_filter(
@@ -80,7 +73,9 @@ base = alt.Chart(collisions).encode(
     height=350,
 )
 
-c2 = base.mark_bar() + base.mark_text(dy=-10, size=15).encode(text="sum(count):Q", color=alt.value('black'))
+c2 = base.mark_bar() + base.mark_text(dy=-10, size=30).encode(text='vehicle_emoji:N')
+
+collisions = collisions.drop(columns=['vehicle_emoji'])
 
 # -------------------------------  c3  -------------------------------------
 
@@ -110,7 +105,11 @@ heatmap = base.mark_rect().encode(
     height=150
 )
 
-c3 = heatmap + base.mark_text(baseline='middle', color='black').encode(text='sum(count):Q')
+c3 = heatmap + base.mark_text(baseline='middle').encode(
+    text='sum(count):Q', 
+    color = alt.condition(selection_day, 
+                          alt.value('black'), 
+                          alt.value('lightgray')))
 
 # -------------------------------  c4  -------------------------------------
 
@@ -189,8 +188,7 @@ days_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
 
 base = alt.Chart(collisions).encode(
     y=alt.Y('DAY_WEEK:N', title='Day of Week', 
-            sort=days_week, 
-            scale=alt.Scale(domain=days_week)),
+            sort='-x'),
     x=alt.X('sum(count):Q', title='Number of Collisions'),
     color=alt.condition(selection_dayweek, alt.value('steelblue'), alt.value('lightgray')),
     tooltip=['DAY_WEEK:N', 'sum(count):Q'],
