@@ -4,7 +4,7 @@ import altair as alt
 
 collisions = pd.read_csv('data/preprocessed-collisions-final.csv') 
 
-options_month = list(collisions['MONTH'].unique()) 
+options_month = ['June', 'July', 'August', 'September']
 input_dropdown_month = alt.binding_select(options=options_month + [None], labels=options_month + ['All'], name='Month:  ')
 selection_month = alt.selection_point(fields=['MONTH'], bind=input_dropdown_month)
 
@@ -35,8 +35,8 @@ base = alt.Chart(collisions).encode(
     selection_month
 ).properties(
     title='Number of collisions by type of weather',
-    height=350, 
-    width=275
+    height=300, 
+    width=250
 )
 
 c1 = base.mark_bar() + base.mark_text(dy=-10, size=30).encode(text='weather_emoji:N')
@@ -70,7 +70,7 @@ base = alt.Chart(collisions).encode(
 ).properties(
     title='Number of collisions by vehicle type',
     width=200,
-    height=350,
+    height=300
 )
 
 c2 = base.mark_bar() + base.mark_text(dy=-10, size=30).encode(text='vehicle_emoji:N')
@@ -102,7 +102,7 @@ heatmap = base.mark_rect().encode(
                           alt.value('lightgray'), legend=None),
 ).properties(
     width=550,
-    height=150
+    height=175
 )
 
 c3 = heatmap + base.mark_text(baseline='middle').encode(
@@ -133,8 +133,8 @@ c4 = alt.Chart(collisions).mark_point(size=3, opacity=0.7, filled=True).encode(
 ).properties(
     title='Number of collisions by borough',
 ).properties(
-    width=450,
-    height=475
+    height=400, 
+    width=350
 )
 
 # -------------------------------  c41  ------------------------------------
@@ -166,7 +166,7 @@ selection_hour_point = alt.selection_point(encodings=['x'])
 c5  = alt.Chart(collisions).mark_line(point=True).encode(
     x=alt.X('HOUR:O', title='Hour of Day', scale=alt.Scale(domain=np.arange(1, 24)), axis=alt.Axis(labelAngle=0)),
     y=alt.Y('sum(count):Q', title='Number of Collisions'),
-    color=alt.condition(selection_hour, alt.value('steelblue'), alt.value('lightgray')),
+    color=alt.condition(selection_hour & selection_hour_point, alt.value('steelblue'), alt.value('lightgray')),
     tooltip=['HOUR:O', 'sum(count):Q'],
 ).transform_aggregate(
     count = 'count()',
@@ -178,7 +178,7 @@ c5  = alt.Chart(collisions).mark_line(point=True).encode(
 ).properties(
     title='Number of collisions by hour of day',
     width=550,
-    height=200
+    height=175
 )
 
 # -------------------------------  c6 ------------------------------------
@@ -202,7 +202,7 @@ base = alt.Chart(collisions).encode(
 ).properties(
     title='Number of collisions by day of week',
     width=500,
-    height=150
+    height=175
 )
 
 c6 = base.mark_point(filled=True) + base.mark_rule()
