@@ -10,38 +10,26 @@ selection_month = alt.selection_point(fields=['MONTH'], bind=input_dropdown_mont
 
 # -------------------------------  c1  -------------------------------------
 
-weather_icon_to_emoji = {
-    'rain': '🌧️',
-    'clear': '☀️',
-    'partly-cloudy': '⛅',
-    'cloudy': '☁️'
-}
-
-collisions['weather_emoji'] = collisions['icon'].map(weather_icon_to_emoji)
-
 selection_weather = alt.selection_point(encodings=['x'])
 
-base = alt.Chart(collisions).encode(
-    x=alt.X('icon:N', title='Weather', sort='-y', axis=alt.Axis(labelAngle=0)),
-    y=alt.Y('sum(count):Q', title='Number of Collisions'),
-    color=alt.condition(selection_weather, alt.value('steelblue'), alt.value('lightgray')), 
-    tooltip=['icon:N', 'sum(count):Q']
+c1 = alt.Chart(collisions).mark_bar().encode(
+  x=alt.X('icon:N', title='Weather', sort='-y', axis=alt.Axis(labelAngle=0)),
+  y=alt.Y('sum(count):Q', title='Number of Accidents'),
+  color=alt.condition(selection_weather, 
+                      alt.Color('CASUALTIES:N', scale=alt.Scale(range=['teal', 'orange'])), 
+                      alt.value('lightgray')), 
 ).transform_aggregate(
-    count = 'count()',
-    groupby=['MONTH', 'DAY_WEEK', 'BOROUGH', 'VEHICLE_TYPE_CODE1', 'HOUR', 'icon', 'DAY', 'weather_emoji']
-).add_params(
-    selection_month, selection_weather
+  count = 'count()',
+  groupby=['MONTH', 'DAY_WEEK', 'BOROUGH', 'VEHICLE_TYPE_CODE1', 'HOUR', 'icon', 'DAY', 'CASUALTIES']
+).add_params( 
+  selection_month, selection_weather
 ).transform_filter(
-    selection_month
+  selection_month
 ).properties(
     title='Number of collisions by type of weather',
     height=300, 
-    width=250
+    width=275
 )
-
-c1 = base.mark_bar() + base.mark_text(dy=-10, size=30).encode(text='weather_emoji:N')
-
-collisions = collisions.drop(columns=['weather_emoji'])
 
 # -------------------------------  c2  -------------------------------------
 
